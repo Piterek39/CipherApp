@@ -1,0 +1,87 @@
+﻿@page "/trithemius-cipher"
+@using System.Text;
+
+<h3>Szyfr Trithemiusa</h3>
+
+<div>
+    <label for="inputText">Tekst:</label>
+    <input type="text" id="inputText" @bind="inputText" />
+</div>
+
+<div>
+    <button class="btn btn-primary" @onclick="Encrypt">Szyfruj</button>
+    <button class="btn btn-secondary" @onclick="Decrypt">Deszyfruj</button>
+</div>
+
+@if (!string.IsNullOrEmpty(resultText))
+{
+    <div>
+        <h4>Wynik:</h4>
+        <p>@resultText</p>
+    </div>
+}
+
+@code {
+    private static readonly string alphabet = "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż";
+
+    public static string Encrypt(string input)
+    {
+        var encrypted = new StringBuilder();
+
+        for (int i = 0; i < input.Length; i++)
+        {
+            char currentChar = input[i];
+            int index = alphabet.IndexOf(char.ToLower(currentChar));
+
+            if (index >= 0) // Znak znajduje się w alfabecie
+            {
+                int shift = (index + i) % alphabet.Length;
+                char encryptedChar = char.IsUpper(currentChar) ? char.ToUpper(alphabet[shift]) : alphabet[shift];
+                encrypted.Append(encryptedChar);
+            }
+            else
+            {
+                encrypted.Append(currentChar); // Znak spoza alfabetu pozostaje bez zmian
+            }
+        }
+
+        return encrypted.ToString();
+    }
+
+    public static string Decrypt(string input)
+    {
+        var decrypted = new StringBuilder();
+
+        for (int i = 0; i < input.Length; i++)
+        {
+            char currentChar = input[i];
+            int index = alphabet.IndexOf(char.ToLower(currentChar));
+
+            if (index >= 0) // Znak znajduje się w alfabecie
+            {
+                int shift = (index - i) % alphabet.Length;
+                if (shift < 0) shift += alphabet.Length; // Zapewnienie, że przesunięcie jest dodatnie
+                char decryptedChar = char.IsUpper(currentChar) ? char.ToUpper(alphabet[shift]) : alphabet[shift];
+                decrypted.Append(decryptedChar);
+            }
+            else
+            {
+                decrypted.Append(currentChar); // Znak spoza alfabetu pozostaje bez zmian
+            }
+        }
+
+        return decrypted.ToString();
+    }
+    private string inputText = "";
+    private string resultText = "";
+
+    private void Encrypt()
+    {
+        resultText = TrithemiusCipher.Encrypt(inputText);
+    }
+
+    private void Decrypt()
+    {
+        resultText = TrithemiusCipher.Decrypt(inputText);
+    }
+}

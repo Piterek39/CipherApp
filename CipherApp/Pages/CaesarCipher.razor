@@ -1,0 +1,79 @@
+﻿@page "/caesar-cipher"
+
+<h3>Szyfr Cezara</h3>
+
+<div class="mb-3">
+    <label for="inputText" class="form-label">Tekst</label>
+    <textarea class="form-control" id="inputText" @bind="inputText"></textarea>
+</div>
+
+<div class="mb-3">
+    <label for="key" class="form-label">Klucz (przesunięcie)</label>
+    <input type="number" class="form-control" id="key" @bind="key" />
+</div>
+
+<button class="btn btn-primary" @onclick="EncryptText">Szyfruj</button>
+<button class="btn btn-secondary" @onclick="DecryptText">Deszyfruj</button>
+
+@if (!string.IsNullOrEmpty(resultText))
+{
+    <div class="mt-3">
+        <h4>Wynik</h4>
+        <p>@resultText</p>
+    </div>
+}
+
+@code {
+    private static readonly string alphabet = "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż";
+    private static readonly string AlphabetUpper = alphabet.ToUpper();
+
+    public static string Encrypt(string input, int key)
+    {
+        return new string(input.Select(c => EncryptCharacter(c, key)).ToArray());
+    }
+
+    public static string Decrypt(string input, int key)
+    {
+        return new string(input.Select(c => DecryptCharacter(c, key)).ToArray());
+    }
+
+    private static char EncryptCharacter(char character, int key)
+    {
+        if (!char.IsLetter(character))
+            return character;
+
+        string usedAlphabet = char.IsUpper(character) ? AlphabetUpper : alphabet;
+        int index = usedAlphabet.IndexOf(character);
+        if (index == -1)
+            return character; 
+
+        int newIndex = (index + key) % usedAlphabet.Length;
+        return usedAlphabet[newIndex];
+    }
+
+    private static char DecryptCharacter(char character, int key)
+    {
+        string usedAlphabet = char.IsUpper(character) ? AlphabetUpper : alphabet;
+        int index = usedAlphabet.IndexOf(character);
+        if (index == -1)
+            return character; 
+
+        
+        int newIndex = (index - key) % usedAlphabet.Length;
+        if (newIndex < 0) newIndex += usedAlphabet.Length;
+        return usedAlphabet[newIndex];
+    }
+    private string inputText = "";
+    private int key = 0;
+    private string resultText = "";
+
+    private void EncryptText()
+    {
+        resultText = CaesarCipher.Encrypt(inputText, key);
+    }
+
+    private void DecryptText()
+    {
+        resultText = CaesarCipher.Decrypt(inputText, key);
+    }
+}

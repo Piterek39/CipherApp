@@ -1,0 +1,97 @@
+﻿@page "/polybius-cipher"
+@using System.Text;
+
+<h3>Szyfr Polibiusza</h3>
+
+<div>
+    <label for="inputText">Tekst:</label>
+    <input type="text" id="inputText" @bind="inputText" />
+</div>
+
+<div>
+    <button class="btn btn-primary" @onclick="Encrypt">Szyfruj</button>
+    <button class="btn btn-secondary" @onclick="Decrypt">Deszyfruj</button>
+</div>
+
+@if (!string.IsNullOrEmpty(resultText))
+{
+    <div>
+        <h4>Wynik:</h4>
+        <p>@resultText</p>
+    </div>
+}
+
+@code {
+    private static readonly char[,] grid = new char[,]
+       {
+        { 'a', 'ą', 'b', 'c', 'ć', 'd' },
+        { 'e', 'ę', 'f', 'g', 'h', 'i' },
+        { 'j', 'k', 'l', 'ł', 'm', 'n' },
+        { 'ń', 'o', 'ó', 'p', 'r', 's' },
+        { 'ś', 't', 'u', 'w', 'y', 'z' },
+        { 'ź', 'ż', ' ', '.', ',', '?' }
+       };
+
+    public static string Encrypt(string input)
+    {
+        input = input.ToLower();
+        var encrypted = new StringBuilder();
+
+        foreach (char c in input)
+        {
+            var found = false;
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] == c)
+                    {
+                        encrypted.Append($"{i + 1}{j + 1} ");
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (!found) encrypted.Append(c); // Jeśli znak nie został znaleziony, dodaj go bez zmian.
+        }
+
+        return encrypted.ToString().Trim();
+    }
+
+    public static string Decrypt(string input)
+    {
+        var decrypted = new StringBuilder();
+        var pairs = input.Split(' ');
+
+        foreach (var pair in pairs)
+        {
+            if (pair.Length == 2 &&
+                int.TryParse(pair[0].ToString(), out int row) &&
+                int.TryParse(pair[1].ToString(), out int col) &&
+                row > 0 && row <= grid.GetLength(0) &&
+                col > 0 && col <= grid.GetLength(1))
+            {
+                decrypted.Append(grid[row - 1, col - 1]);
+            }
+            else
+            {
+                decrypted.Append(pair); // Jeśli para cyfr nie odpowiada żadnemu znakowi, dodaj ją bez zmian.
+            }
+        }
+
+        return decrypted.ToString();
+    }
+    private string inputText = "";
+    private string resultText = "";
+
+    private void Encrypt()
+    {
+        resultText = PolybiusCipher.Encrypt(inputText);
+    }
+
+    private void Decrypt()
+    {
+        resultText = PolybiusCipher.Decrypt(inputText);
+    }
+}

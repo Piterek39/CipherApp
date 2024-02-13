@@ -1,0 +1,80 @@
+﻿@page "/vigenere-cipher"
+@using System.Text;
+
+<h3>Szyfr Vigenère'a</h3>
+
+<div>
+    <label for="inputText">Tekst:</label>
+    <input type="text" id="inputText" @bind="inputText" />
+</div>
+<div>
+    <label for="key">Klucz:</label>
+    <input type="text" id="key" @bind="key" />
+</div>
+
+<div>
+    <button class="btn btn-primary" @onclick="Encrypt">Szyfruj</button>
+    <button class="btn btn-secondary" @onclick="Decrypt">Deszyfruj</button>
+</div>
+
+@if (!string.IsNullOrEmpty(resultText))
+{
+    <div>
+        <h4>Wynik:</h4>
+        <p>@resultText</p>
+    </div>
+}
+
+@code {
+    private static readonly string alphabet = "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż";
+
+    public static string Encrypt(string input, string key)
+    {
+        return Process(input, key, true);
+    }
+
+    public static string Decrypt(string input, string key)
+    {
+        return Process(input, key, false);
+    }
+
+    private static string Process(string input, string key, bool encrypting)
+    {
+        var result = new StringBuilder();
+        int keyIndex = 0;
+
+        foreach (char c in input)
+        {
+            int cIndex = alphabet.IndexOf(char.ToLower(c));
+            if (cIndex >= 0)
+            {
+                int kIndex = alphabet.IndexOf(key[keyIndex % key.Length]);
+                int index = encrypting ? (cIndex + kIndex) % alphabet.Length : (cIndex - kIndex + alphabet.Length) % alphabet.Length;
+
+                char resultChar = index >= 0 ? alphabet[index] : c;
+                result.Append(char.IsUpper(c) ? char.ToUpper(resultChar) : resultChar);
+
+                keyIndex++;
+            }
+            else
+            {
+                result.Append(c);
+            }
+        }
+
+        return result.ToString();
+    }
+    private string inputText = "";
+    private string key = "";
+    private string resultText = "";
+
+    private void Encrypt()
+    {
+        resultText = VigenereCipher.Encrypt(inputText, key);
+    }
+
+    private void Decrypt()
+    {
+        resultText = VigenereCipher.Decrypt(inputText, key);
+    }
+}
