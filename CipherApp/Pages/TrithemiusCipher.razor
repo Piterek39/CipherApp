@@ -33,7 +33,7 @@
             char currentChar = input[i];
             int index = alphabet.IndexOf(char.ToLower(currentChar));
 
-            if (index >= 0) // Znak znajduje się w alfabecie
+            if (index >= 0) 
             {
                 int shift = (index + i) % alphabet.Length;
                 char encryptedChar = char.IsUpper(currentChar) ? char.ToUpper(alphabet[shift]) : alphabet[shift];
@@ -41,7 +41,7 @@
             }
             else
             {
-                encrypted.Append(currentChar); // Znak spoza alfabetu pozostaje bez zmian
+                encrypted.Append(currentChar);
             }
         }
 
@@ -57,16 +57,16 @@
             char currentChar = input[i];
             int index = alphabet.IndexOf(char.ToLower(currentChar));
 
-            if (index >= 0) // Znak znajduje się w alfabecie
+            if (index >= 0) 
             {
                 int shift = (index - i) % alphabet.Length;
-                if (shift < 0) shift += alphabet.Length; // Zapewnienie, że przesunięcie jest dodatnie
+                if (shift < 0) shift += alphabet.Length; 
                 char decryptedChar = char.IsUpper(currentChar) ? char.ToUpper(alphabet[shift]) : alphabet[shift];
                 decrypted.Append(decryptedChar);
             }
             else
             {
-                decrypted.Append(currentChar); // Znak spoza alfabetu pozostaje bez zmian
+                decrypted.Append(currentChar); 
             }
         }
 

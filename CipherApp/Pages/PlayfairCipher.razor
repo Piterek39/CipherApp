@@ -1,7 +1,7 @@
 ﻿@page "/playfair-cipher"
 @using System.Text;
 
-<h3>Szyfr Playfaira z polskimi znakami</h3>
+<h3>Szyfr Playfaira</h3>
 
 <div class="mb-3">
     <label for="keyInput" class="form-label">Klucz:</label>
@@ -30,6 +30,15 @@
     private string key = "";
     private string text = "";
     private string result = "";
+    public string Encrypt(string plaintext)
+    {
+        return ProcessText(plaintext, true);
+    }
+
+    public string Decrypt(string ciphertext)
+    {
+        return ProcessText(ciphertext, false);
+    }
     private char[,] matrix = new char[6, 6];
 
     private void ProcessText(bool encrypting)
@@ -45,7 +54,7 @@
 
         foreach (char c in key.Distinct())
         {
-            if (!characterSet.Contains(c) && characterSet.Count < 36) // Zapewnienie, że nie przekroczymy rozmiaru macierzy
+            if (!characterSet.Contains(c) && characterSet.Count < 36) 
             {
                 matrix[index / 6, index % 6] = c;
                 characterSet.Add(c);
@@ -53,52 +62,6 @@
             }
         }
     }
-
-    public string Encrypt(string plaintext)
-    {
-        return ProcessText(plaintext, true);
-    }
-
-    public string Decrypt(string ciphertext)
-    {
-        return ProcessText(ciphertext, false);
-    }
-
-          /* private static string ProcessText(string input, bool encrypt)
-          {
-          StringBuilder output = new StringBuilder();
-          List<char> preparedInput = PrepareInput(input, encrypt);
-
-              for (int i = 0; i < preparedInput.Count; i += 2)
-              {
-              (int row1, int col1, int row2, int col2) = FindPositions(preparedInput[i], preparedInput[i + 1]);
-
-                  if (row1 == row2)
-                  {
-                  // Same row
-              col1 = (col1 + (encrypt ? 1 : 5)) % 6;
-              col2 = (col2 + (encrypt ? 1 : 5)) % 6;
-                  }
-                  else if (col1 == col2)
-                  {
-                  // Same column
-                  row1 = (row1 + (encrypt ? 1 : 5)) % 6;
-              row2 = (row2 + (encrypt ? 1 : 5)) % 6;
-                  }
-                  else
-                  {
-                  // Rectangle
-                  int temp = col1;
-                  col1 = col2;
-              col2 = temp;
-              }
-
-              output.Append(matrix[row1, col1]);
-              output.Append(matrix[row2, col2]);
-          }
-
-          return output.ToString();
-      }*/
     private string ProcessText(string input, bool encrypt)
     {
         StringBuilder output = new StringBuilder();
@@ -140,35 +103,10 @@
 
 
     private static List<char> PrepareInput(string input, bool encrypt)
-    {
-        // Przygotowanie tekstu wejściowego (np. usunięcie spacji, obsługa par)
-        // W tej wersji pomijamy dodawanie dodatkowych liter do par dla uproszczenia
+    {  
         return input.Replace(" ", "").ToLower().ToList();
     }
 
-    /*private static (int, int, int, int) FindPositions(char a, char b)
-    {
-        int row1 = 0, col1 = 0, row2 = 0, col2 = 0;
-
-        for (int row = 0; row < 6; row++)
-        {
-            for (int col = 0; col < 6; col++)
-            {
-                if (matrix[row, col] == a)
-                {
-                    row1 = row;
-                    col1 = col;
-                }
-                if (matrix[row, col] == b)
-                {
-                    row2 = row;
-                    col2 = col;
-                }
-            }
-        }
-
-        return (row1, col1, row2, col2);
-    }*/
     private (int, int, int, int) FindPositions(char a, char b)
     {
         int row1 = 0, col1 = 0, row2 = 0, col2 = 0;
@@ -192,24 +130,4 @@
 
         return (row1, col1, row2, col2);
     }
-
-    //private PlayfairCipher cipher;
-
-    /*private void EncryptText()
-    {
-        if (!string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(text))
-        {
-            cipher = new PlayfairCipher(key);
-            result = cipher.Encrypt(text);
-        }
-    }
-
-    private void DecryptText()
-    {
-        if (!string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(text))
-        {
-            cipher = new PlayfairCipher(key);
-            result = cipher.Decrypt(text);
-        }
-    }*/
 }

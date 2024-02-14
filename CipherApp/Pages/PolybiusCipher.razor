@@ -53,7 +53,7 @@
                 }
                 if (found) break;
             }
-            if (!found) encrypted.Append(c); // Jeśli znak nie został znaleziony, dodaj go bez zmian.
+            if (!found) encrypted.Append(c); 
         }
 
         return encrypted.ToString().Trim();
@@ -76,7 +76,7 @@
             }
             else
             {
-                decrypted.Append(pair); // Jeśli para cyfr nie odpowiada żadnemu znakowi, dodaj ją bez zmian.
+                decrypted.Append(pair); 
             }
         }
 

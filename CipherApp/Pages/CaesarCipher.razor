@@ -24,6 +24,9 @@
 }
 
 @code {
+    private string inputText = "";
+    private int key = 0;
+    private string resultText = "";
     private static readonly string alphabet = "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż";
     private static readonly string AlphabetUpper = alphabet.ToUpper();
 
@@ -63,9 +66,6 @@
         if (newIndex < 0) newIndex += usedAlphabet.Length;
         return usedAlphabet[newIndex];
     }
-    private string inputText = "";
-    private int key = 0;
-    private string resultText = "";
 
     private void EncryptText()
     {
